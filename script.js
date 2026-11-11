@@ -207,7 +207,7 @@
     root.dataset.flip = settings.flip ? '1' : '0';
     const landscape = settings.layout === 'landscape' || (settings.layout === 'auto' && mqLandscape.matches);
     root.dataset.layout = landscape ? 'landscape' : 'portrait';
-    if (els.metaTheme) els.metaTheme.setAttribute('content', dark ? '#121513' : '#f4f1ea');
+    if (els.metaTheme) els.metaTheme.setAttribute('content', dark ? '#12111d' : '#fbf6ef');
   }
   [mqDark, mqLandscape].forEach((m) => {
     if (m.addEventListener) m.addEventListener('change', applyDisplay);
@@ -1045,10 +1045,10 @@
 
   function fitText(x, text, maxW, size, weight, min) {
     let s = size;
-    x.font = weight + ' ' + s + 'px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    x.font = weight + ' ' + s + 'px Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
     while (x.measureText(text).width > maxW && s > min) {
       s -= 1;
-      x.font = weight + ' ' + s + 'px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+      x.font = weight + ' ' + s + 'px Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
     }
     return s;
   }
@@ -1062,15 +1062,24 @@
     const x = cv.getContext('2d');
     const cb = !!settings.colorblind;
     const col = {
-      bg: '#f4f1ea', ink: '#1d2420', muted: '#666c64', line: '#e1dccf',
-      green: cb ? '#0072b2' : '#2e9e5b', black: '#17191a', neutral: '#d8ceb5', neutralInk: '#7a725e'
+      ink: '#1a1830', muted: '#6d6a86', line: 'rgba(26,24,48,.09)',
+      green: cb ? '#86c3ff' : '#6fdca4', green2: cb ? '#5aa6f0' : '#4ccb91', onGreen: cb ? '#06294a' : '#063b23',
+      black: '#1f1d38', black2: '#121126', neutral: '#ecd9b0', neutralInk: '#8c7442'
     };
     const win = state.over === 'win';
     const hd = shareHeader();
-    const FONT = 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    const FONT = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 
-    x.fillStyle = col.bg;
+    // Fond : dégradé pastel (pêche, lavande, ciel)
+    x.fillStyle = '#fbf6ef';
     x.fillRect(0, 0, W, H);
+    [[W, 0, 900, '#ffdcc2'], [0, H, 1000, '#e2d6ff'], [0, 0, 800, '#d6e9ff']].forEach((g) => {
+      const rg = x.createRadialGradient(g[0], g[1], 0, g[0], g[1], g[2]);
+      rg.addColorStop(0, g[3]);
+      rg.addColorStop(1, g[3] + '00');
+      x.fillStyle = rg;
+      x.fillRect(0, 0, W, H);
+    });
     x.textAlign = 'center';
     x.textBaseline = 'alphabetic';
 
@@ -1080,7 +1089,7 @@
     x.fillText('DUO CODE', W / 2, 110);
     if ('letterSpacing' in x) x.letterSpacing = '0px';
 
-    x.fillStyle = win ? col.green : col.black;
+    x.fillStyle = win ? '#138654' : col.black;
     x.font = '800 130px ' + FONT;
     x.fillText(win ? 'Victoire !' : 'Défaite', W / 2, 270);
 
@@ -1104,16 +1113,26 @@
       const marked = state.marks[1][i] || state.marks[2][i];
       let bg = '#ffffff';
       let ink = col.muted;
-      let border = col.line;
-      if (st === 'green') { bg = col.green; ink = '#fff'; border = col.green; }
-      else if (st === 'black') { bg = col.black; ink = '#fff'; border = col.black; }
-      else if (marked) { bg = col.neutral; ink = col.neutralInk; border = col.neutral; }
-      roundRect(x, px, py, cell, cell, 18);
-      x.fillStyle = bg;
+      if (st === 'green') { bg = col.green; ink = col.onGreen; }
+      else if (st === 'black') { bg = col.black; ink = '#fff'; }
+      else if (marked) { bg = col.neutral; ink = col.neutralInk; }
+      roundRect(x, px, py, cell, cell, 28);
+      x.save();
+      if (st !== 'green' && st !== 'black' && !marked) {
+        x.shadowColor = 'rgba(86,60,150,.14)';
+        x.shadowBlur = 22;
+        x.shadowOffsetY = 8;
+      }
+      if (st === 'green' || st === 'black') {
+        const lg = x.createLinearGradient(px, py, px + cell, py + cell);
+        lg.addColorStop(0, st === 'green' ? col.green : col.black);
+        lg.addColorStop(1, st === 'green' ? col.green2 : col.black2);
+        x.fillStyle = lg;
+      } else {
+        x.fillStyle = bg;
+      }
       x.fill();
-      x.lineWidth = 2;
-      x.strokeStyle = border;
-      x.stroke();
+      x.restore();
       x.fillStyle = ink;
       x.textBaseline = 'middle';
       fitText(x, word, cell - 18, 28, 700, 11);
@@ -1122,7 +1141,7 @@
       if (cb && (st === 'green' || st === 'black')) {
         x.font = '800 26px ' + FONT;
         x.textAlign = 'left';
-        x.fillText(st === 'green' ? '✓' : '✕', px + 12, py + 32);
+        x.fillText(st === 'green' ? '✓' : '✕', px + 14, py + 34);
         x.textAlign = 'center';
       }
     });
@@ -1444,6 +1463,10 @@
 
   async function init() {
     applyDisplay();
+    // Polices prêtes avant de dessiner l'image de partage (canvas)
+    if (document.fonts && document.fonts.load) {
+      ['500', '600', '700', '800'].forEach((w) => document.fonts.load(w + ' 20px Inter').catch(() => {}));
+    }
     try {
       THEMES = await loadThemes();
     } catch (e) {

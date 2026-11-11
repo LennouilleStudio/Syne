@@ -1,4 +1,4 @@
-const CACHE = 'duo-code-v1.5';
+const CACHE = 'duo-code-v2.0';
 const ASSETS = [
   './',
   './index.html',
@@ -6,6 +6,11 @@ const ASSETS = [
   './script.js',
   './words.json',
   './manifest.json',
+  './fonts/Inter-Regular.woff',
+  './fonts/Inter-Medium.woff',
+  './fonts/Inter-SemiBold.woff',
+  './fonts/Inter-Bold.woff',
+  './fonts/Inter-ExtraBold.woff',
   './icons/icon.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',

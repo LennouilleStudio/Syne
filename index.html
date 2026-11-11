@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f4f1ea" id="meta-theme">
+  <meta name="theme-color" content="#fbf6ef" id="meta-theme">
   <meta name="color-scheme" content="light dark">
   <meta name="description" content="Jeu coopératif à deux joueurs inspiré de Codenames Duet.">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -27,13 +27,14 @@
       } catch (e) { /* valeurs par défaut */ }
     })();
   </script>
+  <link rel="preload" href="fonts/Inter-SemiBold.woff" as="font" type="font/woff" crossorigin>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="app">
     <header class="top">
       <div class="bar">
-        <span class="brand">Duo Code</span>
+        <span class="brand"><span class="logo" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Duo Code</span>
         <div class="icons">
           <button id="btn-flip" class="icon-btn" type="button" aria-label="Pivoter l'écran à 180°" title="Pivoter à 180°">
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
@@ -51,16 +52,19 @@
       </div>
 
       <div class="status">
-        <div class="turn">
+        <div class="tile-turn turn">
           <span class="turn-count" id="turn-count">Tour 1</span>
           <span class="turn-label" id="turn-label"></span>
         </div>
-        <div class="score" aria-live="polite"><strong id="score">0</strong> / 15</div>
-      </div>
-      <div class="progress" aria-hidden="true"><div id="progress-bar"></div></div>
-      <div class="tokens-row">
-        <span id="tokens-label">Tours restants</span>
-        <div class="tokens" id="tokens" role="img" aria-label="9 tours restants"></div>
+        <div class="tile-score">
+          <span class="tile-label">Mots trouvés</span>
+          <div class="score" aria-live="polite"><strong id="score">0</strong> / 15</div>
+          <div class="progress" aria-hidden="true"><div id="progress-bar"></div></div>
+        </div>
+        <div class="tile-tokens tokens-row">
+          <span class="tile-label" id="tokens-label">Tours restants</span>
+          <div class="tokens" id="tokens" role="img" aria-label="9 tours restants"></div>
+        </div>
       </div>
       <div id="clue-bar" class="clue-bar" hidden>
         <form id="clue-form" class="clue-form" novalidate>
