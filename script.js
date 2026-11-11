@@ -322,9 +322,12 @@
      ====================================================================== */
 
   async function loadThemes() {
-    const res = await fetch('words.json');
-    if (!res.ok) throw new Error('words.json : HTTP ' + res.status);
-    const data = await res.json();
+    let data = window.DUO_WORDS; // words.js (fonctionne aussi hors serveur)
+    if (!data) {
+      const res = await fetch('words.json');
+      if (!res.ok) throw new Error('words.json : HTTP ' + res.status);
+      data = await res.json();
+    }
     const themes = {};
     Object.entries(data.themes || {}).forEach(([id, t]) => {
       // Normalisation : majuscules, espaces retirés, doublons supprimés

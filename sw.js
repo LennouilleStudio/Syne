@@ -1,10 +1,11 @@
-const CACHE = 'duo-code-v2.0';
+const CACHE = 'duo-code-v2.1';
 const ASSETS = [
   './',
   './index.html',
   './style.css',
   './script.js',
   './words.json',
+  './words.js',
   './manifest.json',
   './fonts/Inter-Regular.woff',
   './fonts/Inter-Medium.woff',
